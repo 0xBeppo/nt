@@ -47,7 +47,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case tea.KeyEnter:
-			fileName = m.textInput.Value()
+			if name := m.textInput.Value(); name != "" {
+				fileName = name
+			}
 			return m, tea.Quit
 		}
 

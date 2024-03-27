@@ -57,7 +57,7 @@ func Execute() {
 func init() {
 	homeDir, _ = os.UserHomeDir()
 	todaysdate := time.Now()
-	rootCmd.Flags().StringVarP(&fileName, "name", "n", todaysdate.Format("2006-01-02"), "Name for the new note, without extension")
+	rootCmd.Flags().StringVarP(&fileName, "name", "n", todaysdate.Format("2006-01-02"), "Name for the new note, without extension will prompt for it")
 }
 
 func getNoteName() string {
