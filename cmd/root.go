@@ -65,7 +65,7 @@ func getNoteName() string {
 	sb.WriteString(homeDir + "/")
 	sb.WriteString(filePath)
 
-	err := os.Mkdir(sb.String(), 07500)
+	err := os.Mkdir(sb.String(), 0750)
 	if err != nil && !os.IsExist(err) {
 		log.Errorf("Prueba: %s", err)
 	}
