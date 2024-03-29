@@ -22,5 +22,6 @@ $ nt [flags] [note-name]
 
 Flags:
   -h, --help          help for nt
-  -n, --name string   Name for the new note, without extension will prompt for it
+  -v, --verbose   Enable verbose mode
+
 ```
