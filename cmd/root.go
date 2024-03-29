@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -41,7 +42,9 @@ parse and organize lastly created notes by their tags, etc.`,
 		ensureExtension()
 		log.Infof("%s", fileName)
 		noteName := getNoteName()
-		createNewNote(noteName)
+		t := createTemplate("note.tmpl")
+		writeTemplate(t, noteName)
+		openNewNote(noteName)
 	},
 }
 
@@ -56,8 +59,39 @@ func Execute() {
 
 func init() {
 	homeDir, _ = os.UserHomeDir()
+	date := getTodaysDate()
+	rootCmd.Flags().StringVarP(&fileName, "name", "n", date, "Name for the new note, without extension will prompt for it")
+}
+
+func getTodaysDate() string {
 	todaysdate := time.Now()
-	rootCmd.Flags().StringVarP(&fileName, "name", "n", todaysdate.Format("2006-01-02"), "Name for the new note, without extension will prompt for it")
+	return todaysdate.Format("2006-01-02")
+}
+
+func createTemplate(tmpl string) *template.Template {
+	t, err := template.New(tmpl).ParseFiles(tmpl)
+	if err != nil {
+		panic(err)
+	}
+
+	return t
+}
+
+func writeTemplate(t *template.Template, noteName string) {
+	file, err := os.OpenFile(noteName, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	notes := MyNote{
+		Title: noteName,
+		Date:  getTodaysDate(),
+		Tags:  []string{},
+	}
+	err = t.Execute(file, notes)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getNoteName() string {
@@ -75,7 +109,7 @@ func getNoteName() string {
 	return sb.String()
 }
 
-func createNewNote(note string) {
+func openNewNote(note string) {
 	log.Infof("Opening: %s", note)
 	command := exec.Command("nvim", note)
 	command.Stdin = os.Stdin
