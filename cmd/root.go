@@ -4,6 +4,7 @@ Copyright © 2024 Markel Elorza 0xBeppo<beppo.dev.io@gmail.com>
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -42,8 +43,12 @@ parse and organize lastly created notes by their tags, etc.`,
 		ensureExtension()
 		log.Infof("%s", fileName)
 		noteName := getNoteName()
-		t := createTemplate("note.tmpl")
-		writeTemplate(t, noteName)
+		// check that is new
+		exists := checkIfNoteExists(noteName)
+		if !exists {
+			t := createTemplate("note.tmpl")
+			writeTemplate(t, noteName, fileName)
+		}
 		openNewNote(noteName)
 	},
 }
@@ -68,6 +73,14 @@ func getTodaysDate() string {
 	return todaysdate.Format("2006-01-02")
 }
 
+func checkIfNoteExists(noteName string) bool {
+	if _, err := os.Stat(noteName); errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	return true
+}
+
 func createTemplate(tmpl string) *template.Template {
 	t, err := template.New(tmpl).ParseFiles(tmpl)
 	if err != nil {
@@ -77,14 +90,15 @@ func createTemplate(tmpl string) *template.Template {
 	return t
 }
 
-func writeTemplate(t *template.Template, noteName string) {
-	file, err := os.OpenFile(noteName, os.O_WRONLY|os.O_CREATE, 0644)
+func writeTemplate(t *template.Template, noteName string, fileName string) {
+	title, _ := strings.CutSuffix(fileName, ".md")
+	file, err := os.Create(noteName)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 	notes := MyNote{
-		Title: noteName,
+		Title: title,
 		Date:  getTodaysDate(),
 		Tags:  []string{},
 	}
