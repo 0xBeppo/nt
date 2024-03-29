@@ -70,14 +70,12 @@ func Execute() {
 
 func init() {
 	homeDir, _ = os.UserHomeDir()
-	date := getTodaysDate()
-	rootCmd.Flags().StringVarP(&fileName, "name", "n", date, "Name for the new note, without extension will prompt for it")
+	fileName = getTodaysDate()
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode")
 }
 
 func getTodaysDate() string {
-	todaysdate := time.Now()
-	return todaysdate.Format("2006-01-02")
+	return time.Now().Format("2006-01-02")
 }
 
 func checkIfNoteExists(noteName string) bool {
