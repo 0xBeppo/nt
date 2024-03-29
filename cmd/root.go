@@ -17,7 +17,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var fileName, homeDir string
+var (
+	fileName, homeDir string
+	verbose           bool
+)
 
 const filePath = "notebook/"
 
@@ -31,6 +34,9 @@ You can create quick notes, todo notes, meeting notes, weekly meeting notes,
 parse and organize lastly created notes by their tags, etc.`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		if verbose {
+			log.SetLevel(log.DebugLevel)
+		}
 		if len(args) == 0 {
 			p := tea.NewProgram(initialModel())
 			if _, err := p.Run(); err != nil {
@@ -41,7 +47,7 @@ parse and organize lastly created notes by their tags, etc.`,
 			fileName = args[0]
 		}
 		ensureExtension()
-		log.Infof("%s", fileName)
+		log.Debugf("%s", fileName)
 		noteName := getNoteName()
 		// check that is new
 		exists := checkIfNoteExists(noteName)
@@ -66,6 +72,7 @@ func init() {
 	homeDir, _ = os.UserHomeDir()
 	date := getTodaysDate()
 	rootCmd.Flags().StringVarP(&fileName, "name", "n", date, "Name for the new note, without extension will prompt for it")
+	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode")
 }
 
 func getTodaysDate() string {
@@ -118,13 +125,13 @@ func getNoteName() string {
 		log.Errorf("Prueba: %s", err)
 	}
 	sb.WriteString(fileName)
-	log.Infof("Created file: %s", sb.String())
+	log.Debugf("Created file: %s", sb.String())
 
 	return sb.String()
 }
 
 func openNewNote(note string) {
-	log.Infof("Opening: %s", note)
+	log.Debugf("Opening: %s", note)
 	command := exec.Command("nvim", note)
 	command.Stdin = os.Stdin
 	command.Stdout = os.Stdout

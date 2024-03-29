@@ -5,10 +5,3 @@ type MyNote struct {
 	Date  string
 	Tags  []string
 }
-
-var tpl = `
----
-title: {{ .Title}}
-date: {{ .Date }}
----
-`
