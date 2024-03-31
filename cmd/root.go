@@ -20,6 +20,7 @@ import (
 var (
 	fileName, homeDir string
 	verbose           bool
+	tags              []string
 )
 
 const filePath = "notebook/"
@@ -72,6 +73,7 @@ func init() {
 	homeDir, _ = os.UserHomeDir()
 	fileName = getTodaysDate()
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode")
+	rootCmd.Flags().StringArrayVarP(&tags, "tags", "t", []string{}, "Tags for the new note")
 }
 
 func getTodaysDate() string {
@@ -105,7 +107,7 @@ func writeTemplate(t *template.Template, noteName string, fileName string) {
 	notes := MyNote{
 		Title: title,
 		Date:  getTodaysDate(),
-		Tags:  []string{},
+		Tags:  tags,
 	}
 	err = t.Execute(file, notes)
 	if err != nil {
