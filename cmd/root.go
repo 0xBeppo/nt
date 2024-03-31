@@ -4,13 +4,10 @@ Copyright © 2024 Markel Elorza 0xBeppo<beppo.dev.io@gmail.com>
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 	"text/template"
-	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
@@ -47,16 +44,16 @@ parse and organize lastly created notes by their tags, etc.`,
 		} else {
 			fileName = args[0]
 		}
-		ensureExtension()
+		EnsureExtension()
 		log.Debugf("%s", fileName)
-		noteName := getNoteName()
+		noteName := GetNoteName()
 		// check that is new
-		exists := checkIfNoteExists(noteName)
+		exists := CheckIfNoteExists(noteName)
 		if !exists {
-			t := createTemplate("note.tmpl")
+			t := CreateTemplate("note.tmpl")
 			writeTemplate(t, noteName, fileName)
 		}
-		openNewNote(noteName)
+		OpenNewNote(noteName)
 	},
 }
 
@@ -71,32 +68,12 @@ func Execute() {
 
 func init() {
 	homeDir, _ = os.UserHomeDir()
-	fileName = getTodaysDate()
+	fileName = GetTodaysDate()
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode")
 	rootCmd.Flags().StringArrayVarP(&tags, "tags", "t", []string{}, "Tags for the new note")
 }
 
-func getTodaysDate() string {
-	return time.Now().Format("2006-01-02")
-}
-
-func checkIfNoteExists(noteName string) bool {
-	if _, err := os.Stat(noteName); errors.Is(err, os.ErrNotExist) {
-		return false
-	}
-
-	return true
-}
-
-func createTemplate(tmpl string) *template.Template {
-	t, err := template.New(tmpl).ParseFiles(tmpl)
-	if err != nil {
-		panic(err)
-	}
-
-	return t
-}
-
+// TODO: Modify to create only main notes
 func writeTemplate(t *template.Template, noteName string, fileName string) {
 	title, _ := strings.CutSuffix(fileName, ".md")
 	file, err := os.Create(noteName)
@@ -106,41 +83,11 @@ func writeTemplate(t *template.Template, noteName string, fileName string) {
 	defer file.Close()
 	notes := MyNote{
 		Title: title,
-		Date:  getTodaysDate(),
+		Date:  GetTodaysDate(),
 		Tags:  tags,
 	}
 	err = t.Execute(file, notes)
 	if err != nil {
 		panic(err)
-	}
-}
-
-func getNoteName() string {
-	var sb strings.Builder
-	sb.WriteString(homeDir + "/")
-	sb.WriteString(filePath)
-
-	err := os.Mkdir(sb.String(), 0750)
-	if err != nil && !os.IsExist(err) {
-		log.Errorf("Prueba: %s", err)
-	}
-	sb.WriteString(fileName)
-	log.Debugf("Created file: %s", sb.String())
-
-	return sb.String()
-}
-
-func openNewNote(note string) {
-	log.Debugf("Opening: %s", note)
-	command := exec.Command("nvim", note)
-	command.Stdin = os.Stdin
-	command.Stdout = os.Stdout
-	err := command.Run()
-	fmt.Println(err)
-}
-
-func ensureExtension() {
-	if !strings.HasSuffix(fileName, ".md") {
-		fileName += ".md"
 	}
 }
