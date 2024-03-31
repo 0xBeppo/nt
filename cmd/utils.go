@@ -9,6 +9,7 @@ import (
 	"text/template"
 	"time"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
 )
 
@@ -60,5 +61,19 @@ func OpenNewNote(note string) {
 func EnsureExtension() {
 	if !strings.HasSuffix(fileName, ".md") {
 		fileName += ".md"
+	}
+}
+
+func EnableVerbose(isVerbose bool) {
+	if isVerbose {
+		log.SetLevel(log.DebugLevel)
+	}
+}
+
+func OpenTeaUi() {
+	p := tea.NewProgram(initialModel())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
 	}
 }

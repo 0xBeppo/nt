@@ -4,19 +4,17 @@ Copyright © 2024 Markel Elorza 0xBeppo<beppo.dev.io@gmail.com>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"text/template"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
 var (
 	fileName, homeDir string
-	verbose           bool
+	isVerbose         bool
 	tags              []string
 )
 
@@ -32,15 +30,9 @@ You can create quick notes, todo notes, meeting notes, weekly meeting notes,
 parse and organize lastly created notes by their tags, etc.`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if verbose {
-			log.SetLevel(log.DebugLevel)
-		}
+		EnableVerbose(isVerbose)
 		if len(args) == 0 {
-			p := tea.NewProgram(initialModel())
-			if _, err := p.Run(); err != nil {
-				fmt.Printf("Alas, there's been an error: %v", err)
-				os.Exit(1)
-			}
+			OpenTeaUi()
 		} else {
 			fileName = args[0]
 		}
@@ -57,8 +49,6 @@ parse and organize lastly created notes by their tags, etc.`,
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -69,8 +59,8 @@ func Execute() {
 func init() {
 	homeDir, _ = os.UserHomeDir()
 	fileName = GetTodaysDate()
-	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode")
-	rootCmd.Flags().StringArrayVarP(&tags, "tags", "t", []string{}, "Tags for the new note")
+	rootCmd.PersistentFlags().BoolVarP(&isVerbose, "verbose", "v", false, "Enable verbose mode")
+	rootCmd.PersistentFlags().StringArrayVarP(&tags, "tags", "t", []string{}, "Tags for the new note")
 }
 
 // TODO: Modify to create only main notes

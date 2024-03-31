@@ -19,6 +19,7 @@ You can create a new TODO note by name, or just use todays date as default
 if the note exists, it will open it with neovim`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("todo called")
+		EnableVerbose(isVerbose)
 	},
 }
 
@@ -26,5 +27,4 @@ func init() {
 	homeDir, _ = os.UserHomeDir()
 	fileName = GetTodaysDate()
 	rootCmd.AddCommand(todoCmd)
-	// TODO: Add tags as flag for every child
 }

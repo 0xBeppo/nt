@@ -10,9 +10,10 @@ parse and organize lastly created notes by their tags, etc.
 
 - [x] Template for quick notes
   [Docs](https://pkg.go.dev/text/template#example-Template-Block)
-- [ ] Tags
+- [x] Tags
 - [ ] Links
 - [ ] Meeting notes
+- [ ] TODOs notes
 - [ ] Organizer
 
 ## Usage
