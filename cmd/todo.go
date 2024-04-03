@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +19,24 @@ var todoCmd = &cobra.Command{
 You can create a new TODO note by name, or just use todays date as default
 if the note exists, it will open it with neovim`,
 	Run: func(cmd *cobra.Command, args []string) {
+		noteType = "todo"
 		fmt.Println("todo called")
 		EnableVerbose(isVerbose)
+		if len(args) == 0 {
+			OpenTeaUi()
+		} else {
+			fileName = args[0]
+		}
+		EnsureExtension("-todolist.md")
+		log.Debugf("%s", fileName)
+		noteName := GetNoteName()
+		// check that is new
+		exists := CheckIfNoteExists(noteName)
+		if !exists {
+			t := CreateTemplate("todo.tmpl")
+			WriteNote(t, noteName, fileName)
+		}
+		OpenNewNote(noteName)
 	},
 }
 

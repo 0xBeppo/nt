@@ -58,9 +58,9 @@ func OpenNewNote(note string) {
 	fmt.Println(err)
 }
 
-func EnsureExtension() {
-	if !strings.HasSuffix(fileName, ".md") {
-		fileName += ".md"
+func EnsureExtension(extension string) {
+	if !strings.HasSuffix(fileName, extension) {
+		fileName += extension
 	}
 }
 
@@ -75,5 +75,23 @@ func OpenTeaUi() {
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
+	}
+}
+
+func WriteNote(t *template.Template, noteName string, fileName string) {
+	title, _ := strings.CutSuffix(fileName, ".md")
+	file, err := os.Create(noteName)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	notes := MyNote{
+		Title: title,
+		Date:  GetTodaysDate(),
+		Tags:  tags,
+	}
+	err = t.Execute(file, notes)
+	if err != nil {
+		panic(err)
 	}
 }

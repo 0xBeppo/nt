@@ -18,7 +18,7 @@ type model struct {
 
 func initialModel() model {
 	ti := textinput.New()
-	ti.Placeholder = fileName + ".md"
+	ti.Placeholder = fileName
 	ti.Focus()
 	ti.CharLimit = 156
 	ti.Width = 20
@@ -43,7 +43,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case tea.KeyTab:
 			if m.textInput.Value() == "" {
-				m.textInput.SetValue(fileName + ".md")
+				m.textInput.SetValue(fileName)
 			}
 
 		case tea.KeyEnter:

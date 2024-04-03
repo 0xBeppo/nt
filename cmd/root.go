@@ -5,17 +5,15 @@ package cmd
 
 import (
 	"os"
-	"strings"
-	"text/template"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
 var (
-	fileName, homeDir string
-	isVerbose         bool
-	tags              []string
+	fileName, homeDir, noteType string
+	isVerbose                   bool
+	tags                        []string
 )
 
 const filePath = "notebook/"
@@ -30,20 +28,21 @@ You can create quick notes, todo notes, meeting notes, weekly meeting notes,
 parse and organize lastly created notes by their tags, etc.`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		noteType = "standard"
 		EnableVerbose(isVerbose)
 		if len(args) == 0 {
 			OpenTeaUi()
 		} else {
 			fileName = args[0]
 		}
-		EnsureExtension()
+		EnsureExtension(".md")
 		log.Debugf("%s", fileName)
 		noteName := GetNoteName()
 		// check that is new
 		exists := CheckIfNoteExists(noteName)
 		if !exists {
 			t := CreateTemplate("note.tmpl")
-			writeTemplate(t, noteName, fileName)
+			WriteNote(t, noteName, fileName)
 		}
 		OpenNewNote(noteName)
 	},
@@ -61,23 +60,4 @@ func init() {
 	fileName = GetTodaysDate()
 	rootCmd.PersistentFlags().BoolVarP(&isVerbose, "verbose", "v", false, "Enable verbose mode")
 	rootCmd.PersistentFlags().StringArrayVarP(&tags, "tags", "t", []string{}, "Tags for the new note")
-}
-
-// TODO: Modify to create only main notes
-func writeTemplate(t *template.Template, noteName string, fileName string) {
-	title, _ := strings.CutSuffix(fileName, ".md")
-	file, err := os.Create(noteName)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	notes := MyNote{
-		Title: title,
-		Date:  GetTodaysDate(),
-		Tags:  tags,
-	}
-	err = t.Execute(file, notes)
-	if err != nil {
-		panic(err)
-	}
 }

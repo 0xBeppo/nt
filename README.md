@@ -15,14 +15,26 @@ parse and organize lastly created notes by their tags, etc.
 - [ ] Meeting notes
 - [ ] TODOs notes
 - [ ] Organizer
+- [ ] Find by tags
+- [ ] Add viper so user can configure custom templates
 
 ## Usage
 
 ```bash
-$ nt [flags] [note-name]
+Usage:
+  nt [flags]
+  nt [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  todo        Create quick note for TODOs
 
 Flags:
-  -h, --help          help for nt
-  -v, --verbose   Enable verbose mode
+  -h, --help               help for nt
+  -t, --tags stringArray   Tags for the new note
+  -v, --verbose            Enable verbose mode
+
+Use "nt [command] --help" for more information about a command.
 
 ```
