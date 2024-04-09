@@ -27,7 +27,7 @@ func CheckIfNoteExists(noteName string) bool {
 }
 
 func CreateTemplate(tmpl string) *template.Template {
-	t, err := template.New(tmpl).ParseFiles(tmpl)
+	t, err := template.New(tmpl).Parse(tmpl)
 	if err != nil {
 		panic(err)
 	}

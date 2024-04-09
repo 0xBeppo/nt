@@ -33,7 +33,7 @@ if the note exists, it will open it with neovim`,
 		// check that is new
 		exists := CheckIfNoteExists(noteName)
 		if !exists {
-			t := CreateTemplate("todo.tmpl")
+			t := CreateTemplate(TodoTemplate)
 			WriteNote(t, noteName, fileName)
 		}
 		OpenNewNote(noteName)

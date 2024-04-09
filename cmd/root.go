@@ -41,7 +41,7 @@ parse and organize lastly created notes by their tags, etc.`,
 		// check that is new
 		exists := CheckIfNoteExists(noteName)
 		if !exists {
-			t := CreateTemplate("note.tmpl")
+			t := CreateTemplate(NoteTemplate)
 			WriteNote(t, noteName, fileName)
 		}
 		OpenNewNote(noteName)

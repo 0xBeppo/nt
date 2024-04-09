@@ -6,3 +6,38 @@ type MyNote struct {
 	Tags     []string
 	OldTasks []string
 }
+
+const NoteTemplate = `
+---
+title: {{ .Title }}
+date: {{ .Date }}
+tags:
+{{- range .Tags }}
+  - {{ . }}
+{{- end }}
+---
+
+`
+
+const TodoTemplate = `
+---
+title: {{ .Title }} TODOs
+date: {{ .Date }}
+tags:
+{{- range .Tags }}
+  - {{ . }}
+{{- end }}
+---
+
+## TODOs
+
+{{- range .OldTasks }}
+{{ . }}
+{{- end }}
+- [ ] 
+
+## In Progress
+
+## Completed ✓
+
+`
