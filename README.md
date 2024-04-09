@@ -13,7 +13,7 @@ parse and organize lastly created notes by their tags, etc.
 - [x] Tags
 - [ ] Links
 - [ ] Meeting notes
-- [ ] TODOs notes
+- [x] TODOs notes
 - [ ] Organizer
 - [ ] Find by tags
 - [ ] Add viper so user can configure custom templates

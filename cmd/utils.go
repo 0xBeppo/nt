@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -79,19 +80,87 @@ func OpenTeaUi() {
 }
 
 func WriteNote(t *template.Template, noteName string, fileName string) {
+	var oldTasks []string
+	notesPath := homeDir + "/" + filePath
 	title, _ := strings.CutSuffix(fileName, ".md")
+	if strings.Contains(fileName, "-todolist.md") {
+		lastTodoNote, err := getLastModifiedFileWithSuffix(notesPath, "-todolist.md")
+		if err != nil {
+			panic(err)
+		}
+		if lastTodoNote != "" {
+			oldTasks, err = getUncompletedTasksFromNote(notesPath + lastTodoNote)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
 	file, err := os.Create(noteName)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 	notes := MyNote{
-		Title: title,
-		Date:  GetTodaysDate(),
-		Tags:  tags,
+		Title:    title,
+		Date:     GetTodaysDate(),
+		Tags:     tags,
+		OldTasks: oldTasks,
 	}
 	err = t.Execute(file, notes)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getLastModifiedFileWithSuffix(directory string, suffix string) (string, error) {
+	var lastModifiedFile string
+	var lastModifiedTime time.Time
+
+	files, err := os.ReadDir(directory)
+	if err != nil {
+		return "", err
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), suffix) {
+			info, err := file.Info()
+			if err != nil {
+				return "", err
+			}
+
+			if info.ModTime().After(lastModifiedTime) {
+				lastModifiedFile = file.Name()
+				lastModifiedTime = info.ModTime()
+			}
+		}
+	}
+
+	if lastModifiedFile == "" {
+		return "", nil
+	}
+
+	return lastModifiedFile, nil
+}
+
+func getUncompletedTasksFromNote(note string) ([]string, error) {
+	file, err := os.Open(note)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var tasks []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "- [ ]") {
+			tasks = append(tasks, line)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
 }

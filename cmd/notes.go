@@ -1,7 +1,8 @@
 package cmd
 
 type MyNote struct {
-	Title string
-	Date  string
-	Tags  []string
+	Title    string
+	Date     string
+	Tags     []string
+	OldTasks []string
 }
