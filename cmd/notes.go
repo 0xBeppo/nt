@@ -19,8 +19,7 @@ tags:
 
 `
 
-const TodoTemplate = `
----
+const TodoTemplate = `---
 title: {{ .Title }} TODOs
 date: {{ .Date }}
 tags:
@@ -31,7 +30,7 @@ tags:
 
 ## TODOs
 
-{{- range .OldTasks }}
+{{ range .OldTasks -}}
 {{ . }}
 {{- end }}
 - [ ] 

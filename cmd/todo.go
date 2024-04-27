@@ -4,7 +4,6 @@ Copyright © 2024 Markel Elorza 0xBeppo<beppo.dev.io@gmail.com>
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/charmbracelet/log"
@@ -20,7 +19,7 @@ You can create a new TODO note by name, or just use todays date as default
 if the note exists, it will open it with neovim`,
 	Run: func(cmd *cobra.Command, args []string) {
 		noteType = "todo"
-		fmt.Println("todo called")
+		log.Debugf("todo called")
 		EnableVerbose(isVerbose)
 		if len(args) == 0 {
 			OpenTeaUi()
