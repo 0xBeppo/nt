@@ -22,7 +22,7 @@ if the note exists, it will open it with neovim`,
 		log.Debugf("todo called")
 		EnableVerbose(isVerbose)
 		if len(args) == 0 {
-			OpenTeaUi()
+			OpenTeaUi(teaViewOptions{viewType: TEXTINPUT})
 		} else {
 			fileName = args[0]
 		}

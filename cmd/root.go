@@ -31,7 +31,7 @@ parse and organize lastly created notes by their tags, etc.`,
 		noteType = "standard"
 		EnableVerbose(isVerbose)
 		if len(args) == 0 {
-			OpenTeaUi()
+			OpenTeaUi(teaViewOptions{viewType: TEXTINPUT})
 		} else {
 			fileName = args[0]
 		}

@@ -15,7 +15,11 @@ parse and organize lastly created notes by their tags, etc.
 - [ ] Meeting notes
 - [x] TODOs notes
 - [ ] Organizer
+- [ ] Finder
 - [ ] Find by tags
+  - for this functionality, find all files with those tags and move them to a temporary folder
+  - then open the files with tea, and once selected open the file with that name from the original folder
+  - finally, delete the temporary folder
 - [ ] Add viper so user can configure custom templates
 
 ## Usage

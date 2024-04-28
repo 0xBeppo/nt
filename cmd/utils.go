@@ -14,6 +14,13 @@ import (
 	"github.com/charmbracelet/log"
 )
 
+type teaViewOptions struct {
+	viewType string
+}
+
+const TEXTINPUT = "textinput"
+const FILEPICKER = "filepicker"
+
 func GetTodaysDate() string {
 	return time.Now().Format("2006-01-02")
 }
@@ -71,8 +78,13 @@ func EnableVerbose(isVerbose bool) {
 	}
 }
 
-func OpenTeaUi() {
-	p := tea.NewProgram(initialModel())
+func OpenTeaUi(options teaViewOptions) {
+	teaModel, err := initialModel(options)
+	if err != nil {
+		log.Errorf("Error: %s", err)
+		os.Exit(1)
+	}
+	p := tea.NewProgram(teaModel)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)

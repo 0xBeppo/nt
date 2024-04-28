@@ -17,6 +17,7 @@ var findCmd = &cobra.Command{
 You can also use tag subcommand to find notes by tags`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("find called")
+		OpenTeaUi(teaViewOptions{viewType: FILEPICKER})
 	},
 }
 
